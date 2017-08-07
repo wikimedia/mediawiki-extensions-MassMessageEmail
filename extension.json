@@ -1,0 +1,23 @@
+{
+	"name": "MassMessageEmail",
+	"version": "0.2.0",
+	"author": "Ike Hecht",
+	"url": "https://www.mediawiki.org/wiki/Extension:MassMessageEmail",
+	"descriptionmsg": "massmessageemail-desc",
+	"license-name": "GPL-2.0+",
+	"type": "other",
+	"MessagesDirs": {
+		"MassMessageEmail": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"MassMessageEmailHooks": "MassMessageEmail.hooks.php"
+	},
+	"Hooks": {
+		"MassMessageJobBeforeMessageSent": [
+			"MassMessageEmailHooks::onMassMessageJobBeforeMessageSent"
+		]
+	},
+	"manifest_version": 1
+}
