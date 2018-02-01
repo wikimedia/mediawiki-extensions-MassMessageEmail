@@ -22,7 +22,7 @@ $wgExtensionCredits['other'][] = array(
 	'url' => 'https://www.mediawiki.org/wiki/Extension:MassMessageEmail',
 	'descriptionmsg' => 'massmessageemail-desc',
 	'version' => '0.2.0',
-	'license-name' => 'GPL-2.0+',
+	'license-name' => 'GPL-2.0-or-later',
 );
 
 $wgMessagesDirs['MassMessageEmail'] = __DIR__ . '/i18n';
