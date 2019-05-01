@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Patsagorn Y."
+			"Patsagorn Y.",
+			"Horus"
 		]
 	},
-	"massmessageemail-desc": "เพิ่มอีเมลล์ไปที่หน้าส่วนส่งข้อความแบบกลุ่ม"
+	"massmessageemail-desc": "เพิ่มอีเมลไปที่หน้าส่วนส่งข้อความแบบกลุ่ม"
 }
