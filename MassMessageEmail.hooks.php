@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 /**
  * This inherits from MassMessageJob, as a hacky way to get access to its protected methods.
  */
@@ -44,7 +46,7 @@ class MassMessageEmailHooks extends MassMessageJob {
 		global $wgArticlePath, $wgServer;
 		$oldArticlePath = $wgArticlePath;
 		$wgArticlePath = $wgServer . $wgArticlePath;
-		$parser = new Parser();
+		$parser = MediaWikiServices::getInstance()->getParserFactory()->create();
 		$parserOutput = $parser->parse( $text, $title, new ParserOptions() );
 		// ... and also generate HTML from the wikitext, which makes sense since
 		// we're sending an email, but it requires $wgAllowHTMLEmail

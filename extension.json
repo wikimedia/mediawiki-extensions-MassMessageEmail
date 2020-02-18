@@ -11,6 +11,9 @@
 			"i18n"
 		]
 	},
+	"requires": {
+		"MediaWiki": ">= 1.32.0"
+	},
 	"AutoloadClasses": {
 		"MassMessageEmailHooks": "MassMessageEmail.hooks.php"
 	},
