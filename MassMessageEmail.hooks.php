@@ -47,7 +47,7 @@ class MassMessageEmailHooks extends MassMessageJob {
 		$oldArticlePath = $wgArticlePath;
 		$wgArticlePath = $wgServer . $wgArticlePath;
 		$parser = MediaWikiServices::getInstance()->getParserFactory()->create();
-		$parserOutput = $parser->parse( $text, $title, new ParserOptions() );
+		$parserOutput = $parser->parse( $text, $title, ParserOptions::newFromAnon() );
 		// ... and also generate HTML from the wikitext, which makes sense since
 		// we're sending an email, but it requires $wgAllowHTMLEmail
 		$html = $parserOutput->getText();
