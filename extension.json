@@ -18,9 +18,7 @@
 		"MassMessageEmailHooks": "MassMessageEmail.hooks.php"
 	},
 	"Hooks": {
-		"MassMessageJobBeforeMessageSent": [
-			"MassMessageEmailHooks::onMassMessageJobBeforeMessageSent"
-		]
+		"MassMessageJobBeforeMessageSent": "MassMessageEmailHooks::onMassMessageJobBeforeMessageSent"
 	},
 	"manifest_version": 1
 }
