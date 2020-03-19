@@ -11,7 +11,7 @@ class MassMessageEmailHooks extends MassMessageJob {
 	 * Hooks into MassMessage
 	 *
 	 * @param MassMessageJob $massMessageJob
-	 * @return boolean
+	 * @return bool
 	 */
 	public static function onMassMessageJobBeforeMessageSent( MassMessageJob $massMessageJob ) {
 		$title = $massMessageJob->getTitle();
@@ -23,7 +23,7 @@ class MassMessageEmailHooks extends MassMessageJob {
 			}
 		}
 
-		//We didn't do anything. Continue execution as if we're not here.
+		// We didn't do anything. Continue execution as if we're not here.
 		return true;
 	}
 
@@ -33,7 +33,7 @@ class MassMessageEmailHooks extends MassMessageJob {
 	 * @global string $wgArticlePath
 	 * @global string $wgServer
 	 * @param MassMessageJob $massMessageJob
-	 * @return boolean
+	 * @return bool
 	 */
 	public static function sendMassMessageEmail( MassMessageJob $massMessageJob ) {
 		$title = $massMessageJob->getTitle();
@@ -51,7 +51,7 @@ class MassMessageEmailHooks extends MassMessageJob {
 		// ... and also generate HTML from the wikitext, which makes sense since
 		// we're sending an email, but it requires $wgAllowHTMLEmail
 		$html = $parserOutput->getText();
-		$status = $user->sendMail( $params['subject'], array( 'text' => $text, 'html' => $html ) );
+		$status = $user->sendMail( $params['subject'], [ 'text' => $text, 'html' => $html ] );
 		$wgArticlePath = $oldArticlePath;
 		if ( !$status->isGood() ) {
 			/** @todo This should really be sending a code - not a message */

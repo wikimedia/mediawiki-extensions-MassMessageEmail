@@ -7,7 +7,7 @@
  * @file
  * @ingroup Extensions
  * @author Ike Hecht
- * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License 2.0 or later
+ * @license GPL-2.0-or-later
  * @todo Add extension.json
  */
 
@@ -15,7 +15,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 	exit;
 }
 
-$wgExtensionCredits['other'][] = array(
+$wgExtensionCredits['other'][] = [
 	'path' => __FILE__,
 	'name' => 'MassMessageEmail',
 	'author' => 'Ike Hecht',
@@ -23,10 +23,10 @@ $wgExtensionCredits['other'][] = array(
 	'descriptionmsg' => 'massmessageemail-desc',
 	'version' => '0.2.0',
 	'license-name' => 'GPL-2.0-or-later',
-);
+];
 
 $wgMessagesDirs['MassMessageEmail'] = __DIR__ . '/i18n';
 
-$wgAutoloadClasses['MassMessageEmailHooks'] = __DIR__ . '/MassMessageEmail.hooks.php';
+$wgAutoloadClasses['MassMessageEmailHooks'] = __DIR__ . '/MassMessageEmailHooks.php';
 
 $wgHooks['MassMessageJobBeforeMessageSent'][] = 'MassMessageEmailHooks::onMassMessageJobBeforeMessageSent';
