@@ -30,8 +30,6 @@ class MassMessageEmailHooks extends MassMessageJob {
 	/**
 	 * Sends the email
 	 *
-	 * @global string $wgArticlePath
-	 * @global string $wgServer
 	 * @param MassMessageJob $massMessageJob
 	 * @return bool
 	 */
