@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Olaf"
+		]
+	},
+	"massmessageemail-desc": "Dodaje funkcjonalność poczty elektronicznej do rozszerzenia MassMessage"
+}
