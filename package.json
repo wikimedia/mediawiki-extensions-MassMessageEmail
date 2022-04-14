@@ -1,4 +1,5 @@
 {
+	"name": "MassMessageEmail",
 	"private": true,
 	"scripts": {
 		"test": "grunt test"
