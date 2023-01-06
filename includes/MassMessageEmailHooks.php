@@ -1,6 +1,8 @@
 <?php
 
 use MediaWiki\MassMessage\Job\MassMessageJob;
+use MediaWiki\MassMessage\LanguageAwareText;
+use MediaWiki\MassMessage\MessageBuilder;
 use MediaWiki\MediaWikiServices;
 use Soundasleep\Html2Text;
 use Soundasleep\Html2TextException;
@@ -14,18 +16,37 @@ class MassMessageEmailHooks extends MassMessageJob {
 	 * Hooks into MassMessage
 	 *
 	 * @param MassMessageJob $massMessageJob
+	 * @param Title $title target page
+	 * @param string $subject
+	 * @param string $message
+	 * @param LanguageAwareText|null $pageSubject
+	 * @param LanguageAwareText|null $pageMessage
+	 * @param array $comment
 	 * @return bool
 	 */
-	public static function onMassMessageJobBeforeMessageSent( MassMessageJob $massMessageJob ) {
-		$title = $massMessageJob->getTitle();
-		$user = User::newFromName( $title->getBaseText() );
-
+	public static function onMassMessageJobBeforeMessageSent(
+		MassMessageJob $massMessageJob,
+		Title $title,
+		string $subject,
+		string $message,
+		?LanguageAwareText $pageSubject,
+		?LanguageAwareText $pageMessage,
+		array $comment
+	) {
 		if ( $title->getNamespace() == NS_USER || $title->getNamespace() == NS_USER_TALK ) {
+			$user = User::newFromName( $title->getBaseText() );
 			if ( $user->canReceiveEmail() ) {
-				return self::sendMassMessageEmail( $massMessageJob );
+				$messageBuilder = new MessageBuilder;
+				$subject = $messageBuilder->buildPlaintextSubject( $subject, $pageSubject );
+				$messageWikitext = $messageBuilder->buildMessage(
+					$message,
+					$pageMessage,
+					$title->getPageLanguage(),
+					$comment
+				);
+				return self::sendMassMessageEmail( $massMessageJob, $title, $subject, $messageWikitext );
 			}
 		}
-
 		// We didn't do anything. Continue execution as if we're not here.
 		return true;
 	}
@@ -34,32 +55,30 @@ class MassMessageEmailHooks extends MassMessageJob {
 	 * Sends the email
 	 *
 	 * @param MassMessageJob $massMessageJob
+	 * @param Title $title Target page
+	 * @param string $subject Plaintext subject
+	 * @param string $messageWikitext Plaintext version of message
 	 * @return bool
 	 */
-	public static function sendMassMessageEmail( MassMessageJob $massMessageJob ) {
-		$title = $massMessageJob->getTitle();
+	public static function sendMassMessageEmail(
+		MassMessageJob $massMessageJob,
+		Title $title,
+		string $subject,
+		string $messageWikitext
+	) {
 		$user = User::newFromName( $title->getBaseText() );
-		$params = $massMessageJob->getParams();
 
-		// Generate plain text ...
-		$status = $massMessageJob->makeText();
-		if ( !$status->isGood() ) {
-			// If the status isn't good, MassMessage will proceed to post to the user's page instead.
-			$massMessageJob->logLocalFailure( $status->getMessage() );
-			return true;
-		}
-		$text = $status->getValue();
 		// Make sure we don't send relative links in the email. Shouldn't that be a ParserOption?
-		global $wgArticlePath, $wgServer;
-		$oldArticlePath = $wgArticlePath;
-		$wgArticlePath = $wgServer . $wgArticlePath;
 		$parser = MediaWikiServices::getInstance()->getParserFactory()->create();
-		$parserOutput = $parser->parse( $text, $title, ParserOptions::newFromAnon() );
+		$parserOutput = $parser->parse( $messageWikitext, $title, ParserOptions::newFromAnon() );
 		// ... and also generate HTML from the wikitext, which makes sense since
 		// we're sending an email, but it requires $wgAllowHTMLEmail
 		$html = $parserOutput->getText( [
-			'enableSectionEditLinks' => false
+			'enableSectionEditLinks' => false,
+			// absoluteURLs is new in 1.38
+			'absoluteURLs' => true,
 		] );
+
 		try {
 			$text = Html2Text::convert( $html, [ 'ignore_errors' => true, 'drop_links' => true ] );
 		} catch ( Html2TextException $exception ) {
@@ -67,8 +86,8 @@ class MassMessageEmailHooks extends MassMessageJob {
 				'Unable to convert HTML email version into text version, falling back to tags stripping' );
 			$text = strip_tags( $html );
 		}
-		$status = $user->sendMail( $params['subject'], [ 'text' => $text, 'html' => $html ] );
-		$wgArticlePath = $oldArticlePath;
+
+		$status = $user->sendMail( $subject, [ 'text' => $text, 'html' => $html ] );
 		if ( !$status->isGood() ) {
 			/** @todo This should really be sending a code - not a message */
 			$massMessageJob->logLocalFailure( $status->getMessage() );
