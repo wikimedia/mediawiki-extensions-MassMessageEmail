@@ -1,6 +1,6 @@
 {
 	"name": "MassMessageEmail",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"author": "Ike Hecht",
 	"url": "https://www.mediawiki.org/wiki/Extension:MassMessageEmail",
 	"descriptionmsg": "massmessageemail-desc",
@@ -14,7 +14,7 @@
 	"requires": {
 		"MediaWiki": ">= 1.38.0",
 		"extensions": {
-			"MassMessage": ">= 0.4.0"
+			"MassMessage": ">= 0.5.0"
 		}
 	},
 	"AutoloadClasses": {

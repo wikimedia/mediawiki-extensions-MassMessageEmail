@@ -1,21 +1,17 @@
 <?php
 
-use MediaWiki\MassMessage\Job\MassMessageJob;
 use MediaWiki\MassMessage\LanguageAwareText;
 use MediaWiki\MassMessage\MessageBuilder;
 use MediaWiki\MediaWikiServices;
 use Soundasleep\Html2Text;
 use Soundasleep\Html2TextException;
 
-/**
- * This inherits from MassMessageJob, as a hacky way to get access to its protected methods.
- */
-class MassMessageEmailHooks extends MassMessageJob {
+class MassMessageEmailHooks {
 
 	/**
 	 * Hooks into MassMessage
 	 *
-	 * @param MassMessageJob $massMessageJob
+	 * @param callable $failureCallback
 	 * @param Title $title target page
 	 * @param string $subject
 	 * @param string $message
@@ -25,7 +21,7 @@ class MassMessageEmailHooks extends MassMessageJob {
 	 * @return bool
 	 */
 	public static function onMassMessageJobBeforeMessageSent(
-		MassMessageJob $massMessageJob,
+		callable $failureCallback,
 		Title $title,
 		string $subject,
 		string $message,
@@ -44,7 +40,7 @@ class MassMessageEmailHooks extends MassMessageJob {
 					$title->getPageLanguage(),
 					$comment
 				);
-				return self::sendMassMessageEmail( $massMessageJob, $title, $subject, $messageWikitext );
+				return self::sendMassMessageEmail( $failureCallback, $title, $subject, $messageWikitext );
 			}
 		}
 		// We didn't do anything. Continue execution as if we're not here.
@@ -54,14 +50,14 @@ class MassMessageEmailHooks extends MassMessageJob {
 	/**
 	 * Sends the email
 	 *
-	 * @param MassMessageJob $massMessageJob
+	 * @param callable $failureCallback
 	 * @param Title $title Target page
 	 * @param string $subject Plaintext subject
 	 * @param string $messageWikitext Plaintext version of message
 	 * @return bool
 	 */
 	public static function sendMassMessageEmail(
-		MassMessageJob $massMessageJob,
+		callable $failureCallback,
 		Title $title,
 		string $subject,
 		string $messageWikitext
@@ -90,7 +86,7 @@ class MassMessageEmailHooks extends MassMessageJob {
 		$status = $user->sendMail( $subject, [ 'text' => $text, 'html' => $html ] );
 		if ( !$status->isGood() ) {
 			/** @todo This should really be sending a code - not a message */
-			$massMessageJob->logLocalFailure( $status->getMessage() );
+			$failureCallback( $status->getMessage() );
 			return true;
 			// If the status isn't good, MassMessage will proceed to post to the user's page instead.
 		} else {
