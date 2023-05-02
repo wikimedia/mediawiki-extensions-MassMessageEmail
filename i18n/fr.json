@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
+			"Verdy p",
 			"Wladek92"
 		]
 	},
-	"massmessageemail-desc": "Ajoute les fonctions courriel à l'extension MassMessage"
+	"massmessageemail-desc": "Ajoute la capacité d’envoi de courriel à l’extension MassMessage"
 }
