@@ -3,6 +3,7 @@
 use MediaWiki\MassMessage\LanguageAwareText;
 use MediaWiki\MassMessage\MessageBuilder;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Title\Title;
 use Soundasleep\Html2Text;
 use Soundasleep\Html2TextException;
 
