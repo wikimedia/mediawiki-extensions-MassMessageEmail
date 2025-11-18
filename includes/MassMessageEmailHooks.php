@@ -78,7 +78,7 @@ class MassMessageEmailHooks {
 
 		try {
 			$text = Html2Text::convert( $html, [ 'ignore_errors' => true, 'drop_links' => true ] );
-		} catch ( Html2TextException $exception ) {
+		} catch ( Html2TextException ) {
 			wfDebugLog( 'MassMessageEmail',
 				'Unable to convert HTML email version into text version, falling back to tags stripping' );
 			$text = strip_tags( $html );
