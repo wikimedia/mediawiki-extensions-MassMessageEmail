@@ -67,14 +67,16 @@ class MassMessageEmailHooks {
 
 		// Make sure we don't send relative links in the email. Shouldn't that be a ParserOption?
 		$parser = MediaWikiServices::getInstance()->getParserFactory()->create();
-		$parserOutput = $parser->parse( $messageWikitext, $title, ParserOptions::newFromAnon() );
+		$parserOptions = ParserOptions::newFromAnon();
+		$parserOutput = $parser->parse( $messageWikitext, $title, $parserOptions );
 		// ... and also generate HTML from the wikitext, which makes sense since
 		// we're sending an email, but it requires $wgAllowHTMLEmail
-		$html = $parserOutput->getText( [
+		$processed = $parserOutput->runOutputPipeline( $parserOptions, [
 			'enableSectionEditLinks' => false,
 			// absoluteURLs is new in 1.38
 			'absoluteURLs' => true,
 		] );
+		$html = $processed->getContentHolderText();
 
 		try {
 			$text = Html2Text::convert( $html, [ 'ignore_errors' => true, 'drop_links' => true ] );
