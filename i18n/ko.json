@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Kwj2772"
+			"Kwj2772",
+			"Tensama0415"
 		]
 	},
 	"massmessageemail-desc": "MassMessage 확장 기능에 이메일 보내기 기능을 추가합니다"
